@@ -1,78 +1,32 @@
-# nodejs-snowflake
+# nodejs-sonyflake
 
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/utkarsh-pro/nodejs-snowflake/graphs/commit-activity)
-[![GitHub issues](https://img.shields.io/github/issues/utkarsh-pro/nodejs-snowflake.svg)](https://github.com/utkarsh-pro/nodejs-snowflake/issues/)
-![Dependencies](https://img.shields.io/david/utkarsh-pro/nodejs-snowflake)
+This has the flavour of Sonyflake by making some changes to the great work from utkarsh-pro on nodejs-snowflake.
 
-nodejs-snowflake is a fast and reliable way to generate time sortable 64 bit ids written for distributed systems.  
-The main id generation function is written in C++ using N-API which makes the process of id generation extremely fast. The usage of C++ for id generation also guaratees that the generated number will be of size 64 bits.  
+# Sonyflake
 
-**Version 1.6 Updates**
-- Add `GetIDFromTimestamp` function which can be used in database queries.  
+39 bits for time in units of 10 msec
+ 8 bits for a sequence number
+16 bits for a machine id
 
-**Version 1.5 Updates**
-- Add `GetMachineIDFromID` help extracting machine id from the generated ids, even if they were generated on different machines
-
-## How to install
-
-```
-npm install nodejs-snowflake --save
-yarn add nodejs-snowflake
-```
+Difference between Sonyflake and Snowflake is in the number of bits assigned for each components and also in Sonyflake, 'sequence number' is placed before 'machine id'.
+Apart from this, usage of this package is the same as nodejs-snowflake as below.
 
 ### NOTE
 The ID generator produces ids faster if the return type is bigint, but this option is disabled by default. Do the following to enable this feature.
 
 ```javascript
 
-const { UniqueID } = require('nodejs-snowflake');
+const { UniqueID } = require('nodejs-sonyflake');
 
 const uid = new UniqueID({
-    returnNumber: true
+    returnNumber: false,
+    machineID: 1,
+    customEpoch: 1622505600000
 }); 
 
-const ID = uid.getUniqueID(); // This id is in javascript bigint format
-
-```
-
-### VERSION 1.5.x Notice
-In earlier versions of nodejs-snowflake, mac address was used for generating the unique ids. This is **no** longer supported in versions 1.5.x due to multiple reasons. Instead of the mac address it now uses "machine id" (value can range from 0 - 4095) which are supposed to be passed by the user. If no machine id is passed by the user then a random number would be used. The benefit of this approach is now the library supports extraction of machine id from the generated ids (irrespective of the machine used to generate it) which can be very useful in error detection in a clustered environment.
-
-```javascript
-
-const { UniqueID } = require('nodejs-snowflake');
-
-const uid = new UniqueID({
-    ...,
-    machineID: 2345 // Any number between 0 - 4095. If not provided then a random number will be used
-}); 
-
-```
-
-## Usage
-
-### Generate ID
-
-```javascript
-const { UniqueID } = require('nodejs-snowflake');
-
-const uid = new UniqueID(config);
-
-uid.getUniqueID(); // A 64 bit id is returned
-
+const ID = uid.getUniqueID(); // This id is in string
 uid.asyncGetUniqueID().then(id => console.log(id)); // Promisified version of the above method
 
-```
-
-#### Configuration
-UniqueID constructor takes in the following configuration
-
-```javascript
-{
-    returnNumber: boolean, // Defaults to false. If set to true, the returned ids will be of type bigint or else of type string
-    customEpoch: number, // Defaults to 1546300800000 (01-01-2019). This is UNIX timestamp in ms
-    machineID: number // A value ranging between 0 - 4095. If not provided then a random value will be used
-}
 ```
 
 ### Get timestamp from the ID
@@ -116,22 +70,5 @@ This solely exits to find the machine id of current machine in case the user did
 ...
 
 uid.machineID; // The machine id of the current machine, set either by user or randomly generated
-
-```
-
-
-## Basic benchmark
-```bash
-# Run for 1sec while invoking function every ms (default)
-npm run benchmark 
-
-# All the arguments
-# --time -> Total time for which the id should be generated
-# --type -> Return type of the id (could be number or string)
-# --interval -> Time interval in which id generation function should invoked
-# UNITS OF TIME
-# 1s = 1 second, 1m = 1 millisecond, 1u = 1 microsecond
-
-npm run benchmark -- --time=2s --type=number --interval=1u
 
 ```
