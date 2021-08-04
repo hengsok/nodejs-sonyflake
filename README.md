@@ -1,18 +1,18 @@
 # nodejs-sonyflake
 
-This has the flavour of Sonyflake by making some changes to the great work from utkarsh-pro on nodejs-snowflake.
+This has the flavour of Sonyflake by making some changes to the great work from utkarsh-pro (nodejs-snowflake).
 
 # Sonyflake
-
+```
 39 bits for time in units of 10 msec
  8 bits for a sequence number
 16 bits for a machine id
-
+```
 Difference between Sonyflake and Snowflake is in the number of bits assigned for each components and also in Sonyflake, 'sequence number' is placed before 'machine id'.
 Apart from this, usage of this package is the same as nodejs-snowflake as below.
 
-### NOTE
-The ID generator produces ids faster if the return type is bigint, but this option is disabled by default. Do the following to enable this feature.
+### Usage
+
 
 ```javascript
 
