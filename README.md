@@ -11,7 +11,7 @@ This has the flavour of Sonyflake by making some changes to the great work from 
 Difference between Sonyflake and Snowflake is in the number of bits assigned for each component and also in Sonyflake, 'sequence number' is placed before 'machine id'.
 Apart from this, usage of this package is the same as nodejs-snowflake as below.
 
-I have not have the time to make changes so that time component is in 10ms precision so that we can have more bits to store time which will extend the lifespan of this Sonyflake id. But this does not affect the result/functionality of Sonyflake id generation.
+I have not have the time to make changes so that the time component is in 10ms precision such that we can have more bits to store time which will extend the lifespan of this Sonyflake id. But this does not affect the result/functionality of Sonyflake id generation.
 
 ### Usage
 
